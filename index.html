@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atelier Spaces | Architecture & Interior Design Studio</title>
+    <script>
+      // Elegant interceptor for benign, external, or cross-origin sandbox script/extension errors
+      window.addEventListener('error', function(event) {
+        if (!event.filename || event.filename.indexOf(window.location.origin) === -1) {
+          event.preventDefault();
+          console.debug('Muffled benign cross-origin script error:', event.message, event.filename);
+        }
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event.reason && event.reason.message && event.reason.message.includes('Script error')) {
+          event.preventDefault();
+          console.debug('Muffled benign cross-origin promise rejection:', event.reason);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
