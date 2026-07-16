@@ -5,10 +5,11 @@ import { ConsultationSubmission } from "../types";
 
 interface ConsultationProps {
   initialProjectType?: string;
-  onSuccess?: (submission: ConsultationSubmission) => void;
+  onSuccess?: (submission: any) => void;
+  simulateFailure?: boolean;
 }
 
-export default function Consultation({ initialProjectType = "Residential Interiors", onSuccess }: ConsultationProps) {
+export default function Consultation({ initialProjectType = "Residential Interiors", onSuccess, simulateFailure: simulateFailureProp }: ConsultationProps) {
   const [projectType, setProjectType] = useState<string>(initialProjectType);
   const [budgetRange, setBudgetRange] = useState<string>("₹1.5 Crores - ₹5 Crores");
   const [timelineSlot, setTimelineSlot] = useState<string>("3 - 6 Months");
@@ -24,6 +25,8 @@ export default function Consultation({ initialProjectType = "Residential Interio
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
   const [loadingStepText, setLoadingStepText] = useState<string>("");
   const [simulateFailure, setSimulateFailure] = useState<boolean>(false);
+
+  const activeSimulateFailure = simulateFailureProp !== undefined ? simulateFailureProp : simulateFailure;
 
   const projectTypes = [
     "Residential Interiors",
@@ -62,7 +65,7 @@ export default function Consultation({ initialProjectType = "Residential Interio
         clearInterval(interval);
 
         setTimeout(() => {
-          if (simulateFailure) {
+          if (activeSimulateFailure) {
             setSubmittingState("error");
           } else {
             const randomID = "ATL-" + Math.floor(100000 + Math.random() * 900000);
@@ -70,15 +73,30 @@ export default function Consultation({ initialProjectType = "Residential Interio
             setSubmittingState("success");
             setIsSubmitted(true);
             
-            const submission: ConsultationSubmission = {
+            const today = new Date().toISOString().split('T')[0];
+            const submission = {
+              id: randomID,
+              date: today,
               projectType,
               budgetRange,
               timelineSlot,
               fullName,
               email,
               phone,
-              briefDescription
+              briefDescription,
+              status: "Awaiting Signoff"
             };
+
+            // Save to shared localStorage pipeline
+            try {
+              const existing = localStorage.getItem("atelier_submissions");
+              const list = existing ? JSON.parse(existing) : [];
+              list.unshift(submission);
+              localStorage.setItem("atelier_submissions", JSON.stringify(list));
+            } catch (err) {
+              console.error(err);
+            }
+
             if (onSuccess) {
               onSuccess(submission);
             }
@@ -309,29 +327,6 @@ export default function Consultation({ initialProjectType = "Residential Interio
                           className="w-full bg-transparent border-b border-white/15 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-white transition-all font-sans font-light"
                         />
                       </div>
-                    </div>
-
-                    {/* Interactive Simulator Switch styled elegantly */}
-                    <div className="p-4 bg-white/5 border border-white/10 rounded-sm flex items-center justify-between">
-                      <div className="space-y-0.5 pr-2">
-                        <span className="font-mono text-[9px] tracking-wider text-brand-beige-200 uppercase font-semibold flex items-center gap-1.5">
-                          <SlidersHorizontal size={11} className="text-brand-beige-300 animate-spin-slow" />
-                          Diagnostic Sandbox Simulator
-                        </span>
-                        <p className="font-sans text-[9px] text-[#A29F9A] leading-tight font-light">
-                          Simulate high-congestion registry lockout error
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                        <input 
-                          type="checkbox" 
-                          id="simulate-failure-checkbox"
-                          checked={simulateFailure}
-                          onChange={(e) => setSimulateFailure(e.target.checked)}
-                          className="sr-only peer" 
-                        />
-                        <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#F5F2ED] after:border-gray-350 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-beige-300"></div>
-                      </label>
                     </div>
 
                     {/* Submit layout */}

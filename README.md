@@ -73,6 +73,20 @@ The interface is styled under a **"Warm Editorial Minimalist"** identity:
 
 ---
 
+## 🔐 Studio Console (Admin Panel)
+
+Atelier Spaces includes a private, hidden administrative console allowing control over live inquiry portfolios, project registries, and system calibrations:
+
+* **How to Access:** Append the query parameter `?admin=true` to the application's root URL (e.g., `http://localhost:3000/?admin=true` or the deployed URL + `?admin=true`). The system will detect this parameter, automatically trigger the secure modal overlay, and strip the parameter from the browser history to maintain visual confidentiality.
+* **Authorized Passcode:** `atelier2026`
+* **Features Included:**
+  * **Studio Pulse Metrics:** Live tracking of registration pipelines, estimated contract value, and active commissions.
+  * **Interactive Commission Slots Allocator:** Slide/allocate slot capacities dynamically. Reaching 6 active slots triggers the system-wide lockout/failure state for new consultation submissions automatically.
+  * **Inquiry Inbox Ledger:** Access complete client brief submissions, transition status between *Awaiting Signoff*, *Secured*, and *Archived*, or remove records from local caches.
+  * **Portfolio CMS Engine:** Add new bespoke masterwork projects to the main exhibition grid with custom dimensions, location, image, design concept, and raw material spec lists.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites

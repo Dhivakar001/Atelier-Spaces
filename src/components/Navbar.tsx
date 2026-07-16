@@ -98,14 +98,16 @@ export default function Navbar({ onNavClick, activeSection }: NavbarProps) {
             </ul>
 
             {/* Premium CTA */}
-            <button
-              onClick={() => handleItemClick("consultation")}
-              id="nav-cta-btn"
-              className="flex items-center space-x-1 font-sans text-[11px] font-medium tracking-[0.2em] text-white bg-brand-charcoal hover:bg-brand-charcoal-light uppercase px-5 py-2.5 transition-all duration-300 shadow-sm"
-            >
-              <span>Consultation</span>
-              <ArrowUpRight size={12} className="opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => handleItemClick("consultation")}
+                id="nav-cta-btn"
+                className="flex items-center space-x-1 font-sans text-[11px] font-medium tracking-[0.2em] text-white bg-brand-charcoal hover:bg-brand-charcoal-light uppercase px-5 py-2.5 transition-all duration-300 shadow-sm"
+              >
+                <span>Consultation</span>
+                <ArrowUpRight size={12} className="opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu Icon */}

@@ -6,9 +6,11 @@ import { X, ArrowRight, TableProperties, CalendarDays, Maximize2, Paintbrush, Se
 
 interface ShowcaseProps {
   onBookInspiration: (projectName: string) => void;
+  projects?: Project[];
 }
 
-export default function Showcase({ onBookInspiration }: ShowcaseProps) {
+export default function Showcase({ onBookInspiration, projects }: ShowcaseProps) {
+  const activeProjects = projects || PORTFOLIO_PROJECTS;
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Dynamic state selectors
@@ -29,7 +31,7 @@ export default function Showcase({ onBookInspiration }: ShowcaseProps) {
         return;
       }
 
-      const filtered = PORTFOLIO_PROJECTS.filter((project) => {
+      const filtered = activeProjects.filter((project) => {
         let catMatch = true;
         if (selectedCategory === "Villas") {
           catMatch = project.propertyType.toLowerCase().includes("villa") || project.propertyType.toLowerCase().includes("hideaway");
@@ -58,7 +60,7 @@ export default function Showcase({ onBookInspiration }: ShowcaseProps) {
     return () => clearTimeout(timer);
   }, [searchQuery, selectedCategory, isSimulatingError]);
 
-  const currentFilteredProjects = PORTFOLIO_PROJECTS.filter((project) => {
+  const currentFilteredProjects = activeProjects.filter((project) => {
     let catMatch = true;
     if (selectedCategory === "Villas") {
       catMatch = project.propertyType.toLowerCase().includes("villa") || project.propertyType.toLowerCase().includes("hideaway");
@@ -145,50 +147,6 @@ export default function Showcase({ onBookInspiration }: ShowcaseProps) {
               )}
             </div>
 
-          </div>
-
-          {/* Sandbox Playground Controller panel */}
-          <div className="p-4 bg-white border border-brand-charcoal/10 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-2.5">
-              <SlidersHorizontal size={14} className="text-brand-beige-300 mt-1" />
-              <div>
-                <h4 className="font-mono text-[9px] tracking-[0.2em] text-brand-charcoal uppercase font-bold">
-                  Design State Diagnostic Deck
-                </h4>
-                <p className="font-sans text-[10px] text-brand-charcoal/50 font-light leading-snug">
-                  Toggle sandbox states to inspect the handcrafted visual aesthetics for other layout responses.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
-              {/* Force Error State Toggle */}
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  id="simulate-gallery-error-checkbox"
-                  checked={isSimulatingError}
-                  onChange={(e) => setIsSimulatingError(e.target.checked)}
-                  className="sr-only peer" 
-                />
-                <div className="w-8 h-4.5 bg-brand-beige-100 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-250 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-red-800"></div>
-                <span className="ml-2 font-mono text-[9px] tracking-wider text-brand-charcoal/70 uppercase">
-                  Simulate Network Error
-                </span>
-              </label>
-
-              {/* Force Empty State Indicator */}
-              <button
-                onClick={() => {
-                  setSearchQuery("Space Age Monolithic Plastic");
-                  setIsSimulatingError(false);
-                }}
-                id="simulate-empty-state-btn"
-                className="bg-brand-beige-100 px-3 py-1.5 border border-brand-charcoal/5 hover:border-brand-charcoal/15 text-brand-charcoal/70 font-mono text-[9px] tracking-wider uppercase transition-colors cursor-pointer"
-              >
-                Trigger Empty State
-              </button>
-            </div>
           </div>
         </div>
 

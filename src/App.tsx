@@ -10,10 +10,61 @@ import About from "./components/About";
 import Testimonials from "./components/Testimonials";
 import Consultation from "./components/Consultation";
 import Footer from "./components/Footer";
+import AdminPanel from "./components/AdminPanel";
+import { PORTFOLIO_PROJECTS } from "./data";
+import { Project } from "./types";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [inquiryType, setInquiryType] = useState<string>("Residential Interiors");
+
+  // Admin and Dynamic Portfolio States
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
+  const [simulateFailure, setSimulateFailure] = useState<boolean>(false);
+  const [occupiedSlots, setOccupiedSlots] = useState<number>(4);
+
+  // Load portfolio from cache on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("atelier_portfolio");
+    if (stored) {
+      try {
+        setProjects(JSON.parse(stored));
+      } catch (e) {
+        setProjects(PORTFOLIO_PROJECTS);
+      }
+    } else {
+      setProjects(PORTFOLIO_PROJECTS);
+    }
+  }, []);
+
+  // Check URL query parameters for secret admin mode
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("admin") === "true") {
+      setIsAdminOpen(true);
+      // Clean up the parameter from URL to keep the entry truly confidential
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
+
+  const handleAddProject = (newProj: Project) => {
+    const updated = [...projects, newProj];
+    setProjects(updated);
+    localStorage.setItem("atelier_portfolio", JSON.stringify(updated));
+  };
+
+  const handleDeleteProject = (projectId: string) => {
+    const updated = projects.filter((p) => p.id !== projectId);
+    setProjects(updated);
+    localStorage.setItem("atelier_portfolio", JSON.stringify(updated));
+  };
+
+  const handleResetProjects = () => {
+    setProjects(PORTFOLIO_PROJECTS);
+    localStorage.removeItem("atelier_portfolio");
+  };
 
   // Smooth scroll helper
   const handleScrollToSection = (sectionId: string) => {
@@ -112,7 +163,7 @@ export default function App() {
         <Overview onActionClick={handleScrollToSection} />
 
         {/* Selected Portfolio Showcase (Masonry and detail drawers) */}
-        <Showcase onBookInspiration={handleInquireFromProject} />
+        <Showcase onBookInspiration={handleInquireFromProject} projects={projects} />
 
         {/* Interactive Before & After comparison slide controller */}
         <BeforeAfter />
@@ -128,13 +179,27 @@ export default function App() {
 
         {/* Master Reservation Consultation form segment */}
         <div id="consultation-wrapper" className="border-t border-brand-charcoal/10">
-          <Consultation initialProjectType={inquiryType} />
+          <Consultation initialProjectType={inquiryType} simulateFailure={simulateFailure} />
         </div>
 
       </main>
 
       {/* Multi-address global studio Footer */}
       <Footer />
+
+      {isAdminOpen && (
+        <AdminPanel
+          onClose={() => setIsAdminOpen(false)}
+          projects={projects}
+          onAddProject={handleAddProject}
+          onDeleteProject={handleDeleteProject}
+          onResetProjects={handleResetProjects}
+          simulateFailure={simulateFailure}
+          setSimulateFailure={setSimulateFailure}
+          occupiedSlots={occupiedSlots}
+          setOccupiedSlots={setOccupiedSlots}
+        />
+      )}
 
     </div>
   );
