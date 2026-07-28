@@ -28,11 +28,7 @@ export default function Hero({ onCtaClick }: HeroProps) {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full pt-24 md:pt-32 pb-16 flex flex-col justify-between min-h-[85vh]">
         
-        {/* Architectural notation flag - AD signature */}
-        <div className="flex items-center space-x-3 text-brand-beige-200/60 font-mono text-[10px] tracking-[0.25em] uppercase">
-          <CornerDownRight size={14} className="stroke-brand-beige-300" />
-          <span>Volumetric Purity — Collector Portfolio</span>
-        </div>
+
 
         {/* Master Headline */}
         <div className="my-auto max-w-4xl pt-16">
